@@ -2,11 +2,12 @@ package ir.maktab;
 
 import ir.maktab.mockdata.MockData;
 import ir.maktab.model.Person;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.Comparator;
-import java.util.List;
+import ir.maktab.model.PersonSummary;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -71,9 +72,35 @@ public class Main {
 
         //TODO Q6
 
+        List<Long> maleAges = personList.stream()
+                .filter(person -> person.getGender().equalsIgnoreCase("male"))
+                .map(person -> {
+                    try {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        Date birthDate = dateFormat.parse(person.getBirthDate());
+                        return new PersonSummary(person.getId(), person.getFirstName(), person.getLastName(), person.getAge(), birthDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .map(personSummary -> {
+                    Date birthDate = personSummary.getBirthDate();
+                    Date currentDate = new Date();
+                    long years = ChronoUnit.YEARS.between(
+                            birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                            currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    );
+                    return years;
+                })
+                .toList();
 
+        OptionalDouble averageAge = maleAges.stream().mapToLong(Long::valueOf).average();
+        if (averageAge.isPresent()) {
+            float age = (float) averageAge.getAsDouble();
+            System.out.println("Average Age: " + age);
+        }
 
-
+        maleAges.forEach(System.out::println);
     }
 }
-

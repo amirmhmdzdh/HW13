@@ -1,10 +1,11 @@
 package ir.maktab.model;
 
 import lombok.*;
-
 @ToString
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Person {
 
     private Integer id;

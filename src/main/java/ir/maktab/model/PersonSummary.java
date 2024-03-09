@@ -1,7 +1,14 @@
 package ir.maktab.model;
 
+import lombok.*;
+
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class PersonSummary {
 
     private Integer id;
